@@ -1,0 +1,27 @@
+{
+  "name": "campusbank-dbms-miniproject",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CampusBank: Student Banking & Personal Finance Management System (DBMS Mini Project)",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "backend:start": "npm start --prefix backend",
+    "backend:dev": "npm run dev --prefix backend",
+    "backend:test": "npm test --prefix backend",
+    "frontend:dev": "npm run dev --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend",
+    "frontend:preview": "npm run preview --prefix frontend"
+  },
+  "keywords": [
+    "dbms",
+    "mysql",
+    "banking-system",
+    "student-finance",
+    "express",
+    "react",
+    "normalization-3nf"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
