@@ -459,43 +459,6 @@ npm run backend:test
 
 ---
 
-## 💡 Viva Voce & Evaluation FAQ
-
-<details>
-<summary><b>1. Why is current balance not stored as a column in the Accounts table?</b></summary>
-
-Storing a mutable balance column in `accounts` introduces a transitive functional dependency on transaction history ($Account \to Transactions \to Balance$), violating 3NF and creating data anomalies if transactions are edited or reversed. In CampusBank, balance is derived dynamically via `AccountSummaryView`, guaranteeing that the balance is always consistent with the immutable ledger.
-</details>
-
-<details>
-<summary><b>2. How does the system prevent deadlocks during concurrent transfers?</b></summary>
-
-When two transfers happen simultaneously in opposite directions (Account 1 $\to$ Account 2 and Account 2 $\to$ Account 1), naive locking would cause a circular wait deadlock. CampusBank solves this by enforcing **deterministic lock ordering**: the database locks the lower `account_id` first, then the higher `account_id`, eliminating circular wait conditions.
-</details>
-
-<details>
-<summary><b>3. How are ACID properties guaranteed during fund transfers?</b></summary>
-
-- **Atomicity:** The operation starts a MySQL transaction. If any step fails (e.g. insufficient funds, destination inactive), `ROLLBACK` reverts all modifications.
-- **Consistency:** Triggers, domain checks, and foreign keys prevent invalid states (e.g. negative balances or orphan records).
-- **Isolation:** `SELECT ... FOR UPDATE` row-level locks prevent dirty reads, non-repeatable reads, and phantom updates.
-- **Durability:** Committed transactions are written to the InnoDB redo log and persisted to disk.
-</details>
-
-<details>
-<summary><b>4. How does the student monthly summary avoid double-counting transfers?</b></summary>
-
-Account transfers move funds internally between accounts belonging to the student and are not real income or expenditure. The monthly summary query explicitly restricts income to `transaction_type = 'deposit' AND category_type = 'income'`, and expenses to `transaction_type = 'withdrawal' AND category_type = 'expense'`. Transfers and loan repayments are isolated into separate metrics.
-</details>
-
-<details>
-<summary><b>5. How are database errors handled gracefully in the application?</b></summary>
-
-The backend maps MySQL error codes (such as `ER_DUP_ENTRY`, `ER_ROW_IS_REFERENCED_2`, and custom trigger `SQLSTATE '45000'`) to clean HTTP status codes (`400 Bad Request`, `409 Conflict`, `404 Not Found`) with actionable error messages displayed in the UI.
-</details>
-
----
-
 ## 👥 Contributors & Academic Context
 
 - **Course:** Database Management Systems (DBMS) Mini Project  
